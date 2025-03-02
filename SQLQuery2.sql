@@ -1,0 +1,9 @@
+﻿CREATE TABLE Reviews (
+    Id INT PRIMARY KEY IDENTITY,
+    UserId NVARCHAR(450) NOT NULL,
+    BookId INT NOT NULL,
+    ReviewText NVARCHAR(MAX) NOT NULL,
+    ReviewDate DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (UserId) REFERENCES AspNetUsers(Id),
+    FOREIGN KEY (BookId) REFERENCES Books(Id)
+);

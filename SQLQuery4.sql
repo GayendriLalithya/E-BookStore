@@ -1,0 +1,8 @@
+﻿CREATE TABLE OrderItems (
+    Id INT PRIMARY KEY IDENTITY,
+    OrderId INT NOT NULL,
+    BookId INT NOT NULL,
+    Quantity INT NOT NULL,
+    FOREIGN KEY (OrderId) REFERENCES Orders(Id) ON DELETE CASCADE,
+    FOREIGN KEY (BookId) REFERENCES Books(Id)
+);
