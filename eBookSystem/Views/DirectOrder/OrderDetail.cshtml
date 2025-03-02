@@ -1,0 +1,206 @@
+﻿@model OrderDetailViewModel
+
+@{
+    ViewData["Title"] = "Order Details";
+}
+
+<style>
+    :root {
+        --primary-color: #0d6efd;
+        --secondary-color: #6c757d;
+        --accent-color: #70d9e6;
+    }
+
+    body {
+        background-color: #f0f8ff;
+        padding: 2rem 0;
+    }
+
+    .container {
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    .order-information {
+        background: white;
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
+    }
+
+        .order-information h4 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .order-information dt {
+            color: var(--secondary-color);
+            font-weight: 600;
+        }
+
+        .order-information dd {
+            margin-bottom: 1rem;
+        }
+
+    .order-items {
+        background: white;
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+        .order-items h4 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+        }
+
+    .cart-items-container {
+        padding: 1rem 0;
+    }
+
+    .list-group {
+        gap: 1rem;
+    }
+
+    .cart-item {
+        display: grid;
+        grid-template-columns: 120px 1fr;
+        gap: 2rem;
+        padding: 1.5rem;
+        border: 1px solid rgba(0,0,0,0.1);
+        margin-bottom: 1rem;
+        transition: transform 0.2s ease;
+    }
+
+        .cart-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+    .item-image {
+        width: 120px;
+        height: 180px;
+        background-color: var(--accent-color);
+        border-radius: 5px;
+        overflow: hidden;
+    }
+
+        .item-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    .item-details {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+        .item-details h4 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+    .item-isbn, .item-quantity, .item-price {
+        color: var(--secondary-color);
+        font-size: 0.9rem;
+    }
+
+    .item-total {
+        color: var(--primary-color);
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin-top: auto;
+    }
+
+    hr {
+        border-color: var(--accent-color);
+        opacity: 0.2;
+    }
+</style>
+
+
+
+
+<div class="container">
+    <div class="order-information">
+        <h4>Order Information</h4>
+
+        <hr />
+        <dl class="row">
+            <!-- Order ID -->
+            <dt class="col-sm-2">Order ID</dt>
+            <dd class="col-sm-10">@Model.Order.Id</dd>
+
+            <!-- Full Name -->
+            <dt class="col-sm-2">Full Name</dt>
+            <dd class="col-sm-10">@Model.Order.FullName</dd>
+
+            <!-- Address -->
+            <dt class="col-sm-2">Address</dt>
+            <dd class="col-sm-10">@Model.Order.Address</dd>
+
+            <!-- City -->
+            <dt class="col-sm-2">City</dt>
+            <dd class="col-sm-10">@Model.Order.City</dd>
+
+            <!-- State -->
+            <dt class="col-sm-2">State</dt>
+            <dd class="col-sm-10">@Model.Order.State</dd>
+
+            <!-- Zip Code -->
+            <dt class="col-sm-2">Zip Code</dt>
+            <dd class="col-sm-10">@Model.Order.ZipCode</dd>
+
+            <!-- Country -->
+            <dt class="col-sm-2">Country</dt>
+            <dd class="col-sm-10">@Model.Order.Country</dd>
+
+            <!-- Total Amount -->
+            <dt class="col-sm-2">Total Amount</dt>
+            <dd class="col-sm-10">Rs. @Model.Order.TotalAmount</dd>
+
+            <!-- Order Date -->
+            <dt class="col-sm-2">Order Date</dt>
+            <dd class="col-sm-10">@Model.Order.OrderDate.ToString("MMMM d, yyyy")</dd>
+
+            <!-- Status -->
+            <dt class="col-sm-2">Status</dt>
+            <dd class="col-sm-10">@Model.Order.Status</dd>
+        </dl>
+
+    </div>
+
+    <div class="order-items">
+        <h4>Order Items</h4>
+        <div class="cart-items-container">
+            <ul class="list-group">
+                @foreach (var item in Model.OrderItems)
+
+                {
+                    <li class="list-group-item cart-item">
+                        <!-- Book Cover Image -->
+                        <div class="item-image">
+                            <img src="data:image/jpeg;base64,@Convert.ToBase64String(item.Book.CoverImage)" alt="@item.Book.Title" class="img-fluid" />
+                        </div>
+
+                        <!-- Book Details -->
+                        <div class="item-details">
+                            <h4 class="item-title">@item.Book.Title</h4>
+                            <div class="item-isbn">ISBN: @item.Book.ISBN</div>
+                            <div class="item-quantity">Quantity: @item.Quantity</div>
+                            <div class="item-price">Price: Rs. @item.Book.Price</div>
+                            <div class="item-total">Total: Rs. @(item.Quantity * item.Book.Price)</div>
+                        </div>
+                    </li>
+                }
+            </ul>
+        </div>
+
+    </div>
+    <center><a asp-action="Index" asp-controller="Home" class="btn btn-primary">Back to Home</a></center>
+    
+</div>

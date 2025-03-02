@@ -1,0 +1,153 @@
+﻿@model IEnumerable<eBookSystem.Models.OrderItem>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        color: white;
+    }
+
+    .table-container {
+        background-color: #33414a;
+        padding: 20px;
+        border-radius: 10px;
+        width: 100%;
+        overflow: hidden;
+        color: white;
+    }
+
+    table.modernTable {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: #1e2027; /* Slightly lighter than the main bg for subtle contrast */
+        color: #ffffff; /* Whiter text for readability */
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+        table.modernTable th {
+            background-color: #1e2027; /* Header bg */
+            padding: 12px;
+            border-bottom: 1px solid #1e2027; /* Subtle border for separation */
+            color: #ffffff; /* Whiter text */
+        }
+
+        table.modernTable td {
+            padding: 12px;
+            border-bottom: 1px solid #1e2027; /* Borders for cells */
+            color: #ffffff; /* Whiter text */
+        }
+
+        table.modernTable tr:nth-child(even) {
+            background-color: #16181e; /* Alternating row highlight */
+        }
+
+    .button-container {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 10px;
+    }
+
+    .btn-download {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        margin-left: 5px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+        .btn-download:hover {
+            background-color: #0056b3;
+        }
+</style>
+
+<div class="table-container">
+    <div class="button-container">
+        <button class="btn-download" onclick="downloadCSV()">Download CSV Report</button>
+        <button class="btn-download" onclick="downloadPDF()">Download PDF Report</button>
+    </div>
+    <table class="modernTable" id="orderItemsTable">
+        <thead>
+            <tr>
+                <th>Book</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Book.Title</td>
+                    <td>@item.Quantity</td>
+                    <td>@item.Book.Price</td>
+                    <td>@(item.Quantity * item.Book.Price)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.13/jspdf.plugin.autotable.min.js"></script>
+<script>
+    function downloadCSV() {
+        var csv = [];
+        var rows = document.querySelectorAll("#orderItemsTable tr");
+        for (var i = 0; i < rows.length; i++) {
+            var row = [], cols = rows[i].querySelectorAll("td, th");
+            for (var j = 0; j < cols.length; j++) {
+                row.push(cols[j].innerText);
+            }
+            csv.push(row.join(","));
+        }
+
+        var csvContent = "data:text/csv;charset=utf-8," + csv.join("\n");
+        var encodedUri = encodeURI(csvContent);
+        var link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "order_items_report.csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    async function downloadPDF() {
+        const { jsPDF } = window.jspdf;
+        var doc = new jsPDF();
+        var rows = document.querySelectorAll("#orderItemsTable tr");
+        var head = [], body = [];
+
+        rows.forEach((row, index) => {
+            var cols = row.querySelectorAll("td, th");
+            var rowData = [];
+            cols.forEach((col, colIndex) => {
+                rowData.push(col.innerText);
+            });
+            if (index === 0) {
+                head.push(rowData);
+            } else {
+                body.push(rowData);
+            }
+        });
+
+        doc.autoTable({
+            head: head,
+            body: body,
+            theme: 'striped',
+            headStyles: {
+                fillColor: [40, 40, 40]
+            },
+            styles: {
+                halign: 'center'
+            }
+        });
+
+        doc.save('order_items_report.pdf');
+    }
+</script>

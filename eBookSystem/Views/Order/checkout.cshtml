@@ -1,0 +1,80 @@
+﻿@model CheckoutViewModel
+
+@{
+    ViewData["Title"] = "Checkout";
+}
+<link rel="stylesheet" href="~/assets/css/checkout_styles.css">
+<h2>Checkout</h2>
+
+<div class="container">
+    <br>
+    <br />
+      
+    <div class="checkout-content">
+        <div class="cart-details">
+            <h3>Order Summary</h3>
+            <div class="cart-items-container">
+                <ul class="list-group">
+                    @foreach (var item in Model.CartItems)
+                    {
+                        <li class="list-group-item cart-item">
+                            <div class="item-image">
+                                <img src="data:image/jpeg;base64,@Convert.ToBase64String(item.Book.CoverImage)" alt="@item.Book.Title" />
+                            </div>
+                            <div class="item-details">
+                                <h4 class="item-title">@item.Book.Title</h4>
+                                <div class="item-isbn">ISBN: @item.Book.ISBN</div>
+                                <div class="item-quantity">
+                                    <span class="quantity">@item.Quantity</span>
+                                </div>
+                            </div>
+                            <div class="item-total">
+                                <div>@item.Quantity x Rs. @item.Book.Price = Rs. @(item.Quantity * item.Book.Price)</div>
+                            </div>
+                            
+                        </li>
+                    }
+                </ul>
+            </div>
+            <div class="cart-footer">
+                <h4>Total: Rs. @Model.TotalAmount</h4>
+            </div>
+        </div>
+        <div class="checkout-form glassmorphism">
+            <h3>Shipping details</h3>
+            <form asp-action="ProcessCheckout" method="post">
+                <div class="form-group">
+                    <label for="FullName">Full Name</label>
+                    <input type="text" class="form-control" id="FullName" name="FullName" required />
+                </div>
+                <div class="form-group">
+                    <label for="Address">Address</label>
+                    <input type="text" class="form-control" id="Address" name="Address" required />
+                </div>
+                <div class="form-group">
+                    <label for="City">City</label>
+                    <input type="text" class="form-control" id="City" name="City" required />
+                </div>
+                <div class="form-group">
+                    <label for="State">State</label>
+                    <input type="text" class="form-control" id="State" name="State" required />
+                </div>
+                <div class="form-group">
+                    <label for="ZipCode">Zip Code</label>
+                    <input type="text" class="form-control" id="ZipCode" name="ZipCode" required />
+                </div>
+                <div class="form-group">
+                    <label for="Country">Country</label>
+                    <input type="text" class="form-control" id="Country" name="Country" required />
+                </div>
+                
+                    <input hidden type="text" class="form-control" id="TotalAmount" name="TotalAmount" readonly value="@Model.TotalAmount" />
+             
+                <div class="form-group">
+                    <button type="submit" class="checkout-btn">Proceed to Payment</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,108 @@
+﻿@model Admin
+@{
+    ViewData["Title"] = "Register";
+}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
+
+  
+</head>
+
+<link rel="stylesheet" href="~/assets/css/admin_registration_styles.css">
+
+<body>
+    <section class="bg-gray-50 min-h-screen flex items-center justify-center top-margin" style="background: none;">
+        <div class="glass flex rounded-2xl shadow-lg max-w-6xl p-5 items-center w-full">
+<div class="md:w-1/2 px-8 md:px-16">
+    <h2 class="font-bold text-2xl text-gray-200 title">Register</h2>
+    <p class="title mt-4 text-gray-300">Create a new account</p>
+
+                <!-- Registration Form -->
+                <form id="registerForm" asp-action="Register" method="post" class="flex flex-col gap-2">
+                    <!-- Display validation summary -->
+                    <div asp-validation-summary="ModelOnly" class="text-red-500" role="alert"></div>
+
+                    <!-- First Name -->
+                    <input class="p-2 mt-4 rounded-xl border form-gap" asp-for="FirstName" autocomplete="given-name" aria-required="true" placeholder="First Name" />
+                    <span asp-validation-for="FirstName" class="text-red-500"></span>
+
+                    <!-- Last Name -->
+                    <input class="p-2 rounded-xl border form-gap" asp-for="LastName" autocomplete="family-name" aria-required="true" placeholder="Last Name" />
+                    <span asp-validation-for="LastName" class="text-red-500"></span>
+
+                    <!-- Mobile Number -->
+                    <input class="p-2 rounded-xl border form-gap" asp-for="MobileNumber" autocomplete="tel" aria-required="true" placeholder="Mobile Number" />
+                    <span asp-validation-for="MobileNumber" class="text-red-500"></span>
+
+                    <!-- Address -->
+                    <input class="p-2 rounded-xl border form-gap" asp-for="Address" autocomplete="street-address" aria-required="true" placeholder="Address" />
+                    <span asp-validation-for="Address" class="text-red-500"></span>
+
+                    <!-- Username -->
+                    <input class="p-2 rounded-xl border form-gap" asp-for="UserName" autocomplete="username" aria-required="true" placeholder="Username" />
+                    <span asp-validation-for="UserName" class="text-red-500"></span>
+
+                    <!-- Email -->
+                    <input class="p-2 rounded-xl border form-gap" asp-for="Email" autocomplete="email" aria-required="true" placeholder="Email" />
+                    <span asp-validation-for="Email" class="text-red-500"></span>
+
+                    <!-- Password -->
+                    <div class="relative form-gap">
+                        <input class="p-2 rounded-xl border w-full" asp-for="PasswordHash" type="password" autocomplete="new-password" aria-required="true" placeholder="Password" />
+                        <button type="button" onclick="togglePasswordVisibility()" class="password-toggle-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="gray" class="bi bi-eye" viewBox="0 0 16 16">
+                                <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z" />
+                                <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z" />
+                            </svg>
+                        </button>
+                        <span asp-validation-for="PasswordHash" class="text-red-500"></span>
+                    </div>
+
+                    <!-- Confirm Password -->
+                    <input class="p-2 rounded-xl border form-gap" type="password" id="ConfirmPassword" name="ConfirmPassword" autocomplete="new-password" aria-required="true" placeholder="Confirm Password" />
+                    <span class="text-red-500" id="confirmPasswordError"></span>
+
+                    <!-- Submit Button -->
+                    <button id="registerSubmit" type="submit" class="btn-login rounded-xl py-2 cursor-pointer">Register</button>
+                </form>
+
+            <div class="md:block hidden w-1/2">
+                <img class="rounded-2xl" src="~/images/background.jpg" alt="Register" loading="lazy" />
+            </div>
+        </div>
+    </section>
+
+    @section Scripts {
+        <partial name="_ValidationScriptsPartial" />
+    }
+    <script>
+        function togglePasswordVisibility() {
+            var passwordField = document.querySelector('input[asp-for="PasswordHash"]');
+            if (passwordField.type === "password") {
+                passwordField.type = "text";
+            } else {
+                passwordField.type = "password";
+            }
+        }
+
+        // Validate Confirm Password
+        document.getElementById("registerForm").addEventListener("submit", function (e) {
+            var password = document.querySelector('input[asp-for="PasswordHash"]').value;
+            var confirmPassword = document.getElementById("ConfirmPassword").value;
+
+            if (password !== confirmPassword) {
+                e.preventDefault(); // Prevent form submission
+                document.getElementById("confirmPasswordError").innerText = "Passwords do not match.";
+            } else {
+                document.getElementById("confirmPasswordError").innerText = "";
+            }
+        });
+    </script>
+</body>
+</html>

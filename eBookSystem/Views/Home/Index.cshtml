@@ -1,0 +1,95 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+@model List<eBookSystem.Models.Book>
+
+@Html.Partial("~/Views/Shared/Sections/Slider/_Slider.cshtml")
+
+
+    <!-- Features Section -->
+    <section class="features-section py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="feature-card">
+                        <i class="fas fa-truck feature-icon"></i>
+                        <h5>Free Shipping</h5>
+                        <p>On orders over $50</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="feature-card">
+                        <i class="fas fa-undo feature-icon"></i>
+                        <h5>Easy Returns</h5>
+                        <p>30-day return policy</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="feature-card">
+                        <i class="fas fa-lock feature-icon"></i>
+                        <h5>Secure Payment</h5>
+                        <p>100% secure checkout</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="feature-card">
+                        <i class="fas fa-headset feature-icon"></i>
+                        <h5>24/7 Support</h5>
+                        <p>Round the clock assistance</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+<!-- Book Slider -->
+<section class="container py-5">
+    <h2 class="mb-4">Trending Books</h2>
+    <div class="book-slider position-relative">
+        <div class="book-wrapper">
+            @foreach (var book in Model)
+            {
+                    <div class="book-card card">
+                        <div class="position-relative">
+                            <!-- Book Cover Image -->
+                            <div class="img-holder" style="height: 200px; overflow: hidden;">
+                                <img src="data:image/png;base64,@Convert.ToBase64String(book.CoverImage)" alt="@book.Title" class="img-fluid" />
+                            </div>
+
+                            <!-- Stock Badge -->
+                            <span class="badge @(book.Quantity > 5 ? "bg-success" : book.Quantity > 0 ? "bg-warning" : "bg-danger") stock-badge">
+                            @(book.Quantity > 5 ? "In Stock" : book.Quantity > 0 ? "Low Stock" : "Out of Stock")
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <!-- Book Title -->
+                            <h5 class="card-title">@book.Title</h5>
+
+                            <!-- Author -->
+                            <p class="card-text">@book.Author</p>
+
+                            <!-- Price -->
+                            <p class="card-text"><strong>Rs. @book.Price</strong></p>
+
+                            <!-- Add to Cart Button -->
+                            <button class="btn btn-primary w-100">Add to Cart</button>
+                        </div>
+                    </div>
+            }
+        </div>
+
+        <!-- Slider Controls -->
+        <button class="slider-control prev-btn">❮</button>
+        <button class="slider-control next-btn">❯</button>
+    </div>
+</section>
+
+
+
+
+
+  <script src="~/assets/js/script.js" defer></script>
+
+  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>

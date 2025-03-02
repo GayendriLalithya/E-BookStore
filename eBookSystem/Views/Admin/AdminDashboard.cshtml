@@ -1,0 +1,135 @@
+﻿@model eBookSystem.Models.AdminDashboardViewModel
+
+@{
+    ViewData["Title"] = "Admin Dashboard";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - eBookSystem</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    
+
+</head>
+<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/eBookSystem.styles.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/admin/AdminStyle.css">
+<link rel="stylesheet" href="~/assets/css/admin_dashboard_styles.css">
+
+z
+<body>
+    <main>
+        <h1>Analytics</h1>
+        <div class="analyse">
+            <div class="sales">
+                <div class="status">
+                    <div class="info">
+                        <h3>Total Sales</h3>
+                        <h1>@Model.TotalSales.ToString("C")</h1>
+                    </div>
+                    <div class="progresss">
+                        <svg>
+                            <circle cx="38" cy="38" r="36"></circle>
+                        </svg>
+                        <div class="percentage">
+                            <p>+81%</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="visits">
+                <div class="status">
+                    <div class="info">
+                        <h3>Total Sales Count</h3>
+                        <h1>@Model.TotalSalesCount</h1>
+                    </div>
+                    <div class="progresss">
+                        <svg>
+                            <circle cx="38" cy="38" r="36"></circle>
+                        </svg>
+                        <div class="percentage">
+                            <p>-48%</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="searches">
+                <div class="status">
+                    <div class="info">
+                        <h3>Total Users</h3>
+                        <h1>@Model.TotalUsers</h1>
+                    </div>
+                    <div class="progresss">
+                        <svg>
+                            <circle cx="38" cy="38" r="36"></circle>
+                        </svg>
+                        <div class="percentage">
+                            <p>+21%</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="new-users">
+            <h2>Most Popular Books</h2>
+            <div class="user-list">
+                @if (Model.MostPopularBooks != null && Model.MostPopularBooks.Count > 0)
+                {
+                    @foreach (var book in Model.MostPopularBooks)
+                    {
+                        <div class="book">
+                            <img src="data:image/jpeg;base64,@(book.CoverImage != null ? Convert.ToBase64String(book.CoverImage) : "")" alt="Book Cover" />
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p>No popular books found.</p>
+                }
+            </div>
+        </div>
+
+        <div class="recent-orders">
+            <h2>Recent Orders</h2>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Customer Name</th>
+                        <th>Total Amount</th>
+                        <th>Order Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.RecentOrders != null && Model.RecentOrders.Count > 0)
+                    {
+                        @foreach (var order in Model.RecentOrders)
+                        {
+                            <tr>
+                                <td>@order.Id</td>
+                                <td>@order.FullName</td>
+                                <td>@order.TotalAmount.ToString("C")</td>
+                                <td>@order.OrderDate.ToString("yyyy-MM-dd")</td>
+                                <td>@order.Status</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="5">No recent orders found.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <a href="#">Show All</a>
+        </div>
+    </main>
+    <script src="~/assets/js/orders.js"></script>
+    <script src="~/assets/js/mode.js"></script>
+</body>

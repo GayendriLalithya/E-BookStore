@@ -1,0 +1,10 @@
+﻿@{
+    ViewData["Title"] = "Order Success";
+}
+
+<h2>Order Success</h2>
+
+<p>Thank you for your purchase! Your order has been successfully processed.</p>
+<p>Order ID: @ViewBag.OrderId</p>
+<p><a href="@Url.Action("Index", "Home")">Return to Home</a></p>
+<p><a href="@Url.Action("OrderDetail", "Order", new { orderId = ViewBag.OrderId })">View Order Details</a></p>

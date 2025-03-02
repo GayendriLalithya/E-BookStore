@@ -1,0 +1,138 @@
+﻿@{
+    ViewData["Title"] = "Reports";
+}
+
+<div class="container">
+    <h2>Generate Reports</h2>
+    <div class="form-group">
+        <label for="reportType">Report Type:</label>
+        <select id="reportType" class="form-control">
+            <option value="overallSales">Overall Sales Report</option>
+            <option value="salesByBook">Sales by Book Report</option>
+            <option value="salesByAuthor">Sales by Author Report</option>
+            <option value="salesByCategory">Sales by Category Report</option>
+            <option value="salesByCustomer">Sales by Customer Report</option>
+            <option value="inventoryStatus">Inventory Status Report</option>
+            <option value="outOfStock">Out of Stock Report</option>
+            <option value="lowStockAlert">Low Stock Alert Report</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="fromDate">From Date:</label>
+        <input type="date" id="fromDate" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="toDate">To Date:</label>
+        <input type="date" id="toDate" class="form-control" />
+    </div>
+    <button class="btn btn-primary" id="generateReportBtn">Generate Report</button>
+    <button class="btn btn-secondary" id="downloadReportBtn">Download Report</button>
+</div>
+
+<div id="reportContainer" style="margin-top: 20px;"></div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.13/jspdf.plugin.autotable.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('generateReportBtn').addEventListener('click', generateReport);
+            document.getElementById('downloadReportBtn').addEventListener('click', downloadReport);
+        });
+
+        async function generateReport() {
+            const reportType = document.getElementById("reportType").value;
+            const fromDate = document.getElementById("fromDate").value;
+            const toDate = document.getElementById("toDate").value;
+
+            let url = '';
+            switch (reportType) {
+                case 'overallSales':
+                    url = '/Reports/GenerateOverallSalesReport';
+                    break;
+                case 'salesByBook':
+                    url = '/Reports/GenerateSalesByBookReport';
+                    break;
+                case 'salesByAuthor':
+                    url = '/Reports/GenerateSalesByAuthorReport';
+                    break;
+                case 'salesByCategory':
+                    url = '/Reports/GenerateSalesByCategoryReport';
+                    break;
+                case 'salesByCustomer':
+                    url = '/Reports/GenerateSalesByCustomerReport';
+                    break;
+                case 'inventoryStatus':
+                    url = '/Reports/GenerateInventoryStatusReport';
+                    break;
+                case 'outOfStock':
+                    url = '/Reports/GenerateOutOfStockReport';
+                    break;
+                case 'lowStockAlert':
+                    url = '/Reports/GenerateLowStockAlertReport';
+                    break;
+                default:
+                    console.error('Invalid report type');
+                    return;
+            }
+
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ fromDate, toDate })
+            });
+
+            const data = await response.json();
+            displayReport(data, reportType);
+        }
+
+        function displayReport(data, reportType) {
+            const reportContainer = document.getElementById("reportContainer");
+            reportContainer.innerHTML = '';
+
+            data.forEach(row => {
+                const p = document.createElement('p');
+                switch (reportType) {
+                    case 'overallSales':
+                        p.textContent = Date: ${ row.date }, Total Sales: ${ row.totalSales }, Number of Books Sold: ${ row.numberOfBooksSold };
+                        break;
+                    case 'salesByBook':
+                        p.textContent = Book Title: ${ row.bookTitle }, Units Sold: ${ row.unitsSold }, Revenue Generated: ${ row.revenueGenerated };
+                        break;
+                    case 'salesByAuthor':
+                        p.textContent = Author Name: ${ row.authorName }, Units Sold: ${ row.unitsSold }, Revenue Generated: ${ row.revenueGenerated };
+                        break;
+                    case 'salesByCategory':
+                        p.textContent = Category Name: ${ row.categoryName }, Units Sold: ${ row.unitsSold }, Revenue Generated: ${ row.revenueGenerated };
+                        break;
+                    case 'salesByCustomer':
+                        p.textContent = Customer Name: ${ row.customerName }, Units Bought: ${ row.unitsBought }, Total Spent: ${ row.totalSpent };
+                        break;
+                    case 'inventoryStatus':
+                        p.textContent = Book Title: ${ row.bookTitle }, Available: ${ row.available }, Reserved: ${ row.reserved }, Sold: ${ row.sold };
+                        break;
+                    case 'outOfStock':
+                        p.textContent = Book Title: ${ row.bookTitle }, Available: ${ row.available };
+                        break;
+                    case 'lowStockAlert':
+                        p.textContent = Book Title: ${ row.bookTitle }, Available: ${ row.available };
+                        break;
+                    default:
+                        console.error('Invalid report type');
+                        return;
+                }
+                reportContainer.appendChild(p);
+            });
+        }
+
+        async function downloadReport() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const reportContainer = document.getElementById("reportContainer");
+            const text = reportContainer.textContent;
+
+            doc.text(text, 10, 10);
+            doc.save(${ document.getElementById("reportType").value }_report.pdf);
+        }
+    </script>
+}

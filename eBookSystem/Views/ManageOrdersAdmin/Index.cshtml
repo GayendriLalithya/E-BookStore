@@ -1,0 +1,624 @@
+﻿@model IEnumerable<eBookSystem.Models.Order>
+
+@{
+    ViewData["Title"] = "Manage Orders";
+
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - eBookSystem</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/eBookSystem.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/admin/book.css" asp-append-version="true" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            color: white;
+        }
+
+        .btn-primary, .btn-danger, .btn-info {
+            background-color: #6200ee;
+            border: none;
+            border-radius: 12px;
+            width: 24px;
+            height: 24px;
+            margin-bottom: 14px;
+            transition: background-color 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+            .btn-primary:hover, .btn-danger:hover, .btn-info:hover {
+                background-color: #3700b3;
+            }
+
+        .btn-danger {
+            background-color: #ee0062;
+        }
+
+            .btn-danger:hover {
+                background-color: #b30037;
+            }
+
+        .btn-info {
+            background-color: #00bcd4;
+        }
+
+            .btn-info:hover {
+                background-color: #008ba3;
+            }
+
+        .btn-download {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+            .btn-download:hover {
+                background-color: #0056b3;
+            }
+
+        .action-icons {
+            display: flex;
+            gap: 10px;
+        }
+
+            .action-icons .btn .icon {
+                margin-right: 5px;
+            }
+
+        .modal-content {
+            background-color: #33414a;
+            color: white;
+            border-radius: 10px;
+            border: none;
+        }
+
+        .modal-header {
+            border-bottom: 1px solid #1e2027;
+        }
+
+        .modal-body {
+            background-color: #1e2027;
+        }
+
+        .modal-footer {
+            border-top: 1px solid #1e2027;
+        }
+
+        .close {
+            color: white;
+        }
+
+            .close:hover {
+                color: #888;
+            }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .alert {
+            background-color: #33414a;
+            border: none;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .content {
+            flex: 1;
+        }
+
+        .table-container {
+            background-color: #33414a;
+            padding: 20px;
+            border-radius: 10px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        table.modernTable {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #1e2027;
+            color: #E0E0E0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+            table.modernTable th {
+                background-color: #1e2027;
+                padding: 12px;
+                border-bottom: 1px solid #1e2027;
+                cursor: pointer;
+            }
+
+                table.modernTable th.sortable:after {
+                    content: " \25B2"; /* up arrow */
+                    font-size: 0.8em;
+                    color: #aaa;
+                    padding-left: 5px;
+                }
+
+                table.modernTable th.sortable.desc:after {
+                    content: " \25BC"; /* down arrow */
+                }
+
+            table.modernTable td {
+                padding: 12px;
+                border-bottom: 1px solid #1e2027;
+            }
+
+            table.modernTable tr:nth-child(even) {
+                background-color: #16181e;
+            }
+
+        .filter-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+            .filter-container input,
+            .filter-container select {
+                width: 150px;
+                padding: 5px;
+            }
+    </style>
+
+    <style>
+        /* Modal Background Styles */
+        .modal-content {
+            background-color: #1e2027;
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Modal Header Styles */
+        .modal-header {
+            background-color: #1e2027;
+            border-bottom: 1px solid #2d3436;
+            padding: 1rem 1.5rem;
+        }
+
+        .modal-title {
+            color: #ffffff;
+            font-size: 1.25rem;
+            font-weight: 400;
+        }
+
+        /* Close Button Styles */
+        .modal-header .close {
+            color: #ffffff;
+            opacity: 0.8;
+            font-size: 1.5rem;
+            padding: 1rem;
+            margin: -1rem -1rem -1rem auto;
+            background: transparent;
+            border: none;
+        }
+
+            .modal-header .close:hover {
+                opacity: 1;
+            }
+
+        /* Modal Body Styles */
+        .modal-body {
+            background-color: #1e2027;
+            padding: 1.5rem;
+        }
+
+        /* Form Control Styles */
+        .form-control,
+        select.form-control {
+            background-color: #2d3436;
+            border: 1px solid #404548;
+            color: #ffffff;
+            border-radius: 4px;
+            height: 40px;
+            width: 100%;
+            padding: 0.5rem;
+        }
+
+            .form-control:focus {
+                background-color: #2d3436;
+                border-color: #007bff;
+                box-shadow: none;
+                color: #ffffff;
+            }
+
+        /* Label Styles */
+        .form-group label {
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+            display: block;
+            font-weight: 400;
+        }
+
+        /* Select Dropdown Styles */
+        select.form-control {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 16px 12px;
+            padding-right: 2.5rem;
+        }
+
+            select.form-control option {
+                background-color: #2d3436;
+                color: #ffffff;
+            }
+
+        /* Button Styles */
+        .modal-body .btn-primary {
+            background-color: #007bff;
+            border: none;
+            color: #ffffff;
+            padding: 8px 16px;
+            border-radius: 4px;
+            width: auto;
+            height: auto;
+            margin-top: 1rem;
+        }
+
+            .modal-body .btn-primary:hover {
+                background-color: #0056b3;
+            }
+    </style>
+
+</head>
+
+<body>
+    <main>
+        <div class="container">
+            <div class="content">
+                <h1>Manage Orders</h1>
+
+                @if (TempData["msg"] != null)
+
+                {
+                    <div class="alert alert-info">
+                        @TempData["msg"]
+                    </div>
+                }
+
+                <div class="table-container">
+                    <div class="filter-container">
+                        <label for="fromDate">From:</label>
+                        <input type="datetime-local" id="fromDate" class="form-control" />
+                        <label for="toDate">To:</label>
+                        <input type="datetime-local" id="toDate" class="form-control" />
+                        <label for="statusFilter">Status:</label>
+                        <select id="statusFilter" class="form-control">
+                            <option value="">All</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Confirmed">Confirmed</option>
+                            <option value="Processing">Processing</option>
+                            <option value="Shipped">Shipped</option>
+                            <option value="Delivered">Delivered</option>
+                            <option value="Completed">Completed</option>
+                            <option value="Cancelled">Cancelled</option>
+                        </select>
+                        <button class="btn-download" onclick="filterOrders()">Filter</button>
+                        <input type="text" id="searchBox" onkeyup="searchOrders()" placeholder="Search orders..." />
+                        <button class="btn-download" onclick="downloadCSV()">Download CSV Report</button>
+                        <button class="btn-download" onclick="downloadPDF()">Download PDF Report</button>
+                    </div>
+                    <table id="ordersTable" class="modernTable">
+                        <thead>
+                            <tr>
+                                <th class="sortable" onclick="sortTable(0)">Order ID</th>
+                                <th class="sortable" onclick="sortTable(1)">Customer</th>
+                                <th class="sortable" onclick="sortTable(2)">Date</th>
+                                <th class="sortable" onclick="sortTable(3)">Status</th>
+                                <th class="sortable" onclick="sortTable(4)">Total Amount</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ordersTableBody">
+                            @foreach (var order in Model)
+
+                            {
+                                <tr>
+                                    <td style="width:90px">@order.Id</td>
+                                    <td style="width:190px">@order.FullName</td>
+                                    <td style="width:130px">@order.OrderDate.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                                    <td style="width:180px">@order.Status</td>
+                                    <td style="width:200px">@order.TotalAmount.ToString("C")</td>
+                                    <td style="width:260px" class="action-icons">
+                                        <button class="btn btn-primary" onclick="showEditStatusModal(@order.Id, '@order.Status')">
+                                            <span class="icon">&#9998;</span>
+                                        </button>
+                                        <button class="btn btn-danger" onclick="deleteOrder(@order.Id)">
+                                            <span class="icon">&#10060;</span>
+                                        </button>
+                                        <button class="btn btn-info" onclick="viewOrderItems(@order.Id)">
+                                            <span class="icon">&#128065;</span>
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit Status Modal -->
+        <div class="modal fade" id="editStatusModal" tabindex="-1" role="dialog" aria-labelledby="editStatusModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editStatusModalLabel">Edit Order Status</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editStatusForm" method="post" asp-action="EditOrderStatus" asp-controller="ManageOrdersAdmin">
+                            <input type="hidden" id="editStatusOrderId" name="id" />
+                            <div class="form-group">
+                                <label for="status">Status</label>
+                                <select id="status" name="status" class="form-control">
+                                    <option value="Pending">Pending</option>
+                                    <option value="Confirmed">Confirmed</option>
+                                    <option value="Processing">Processing</option>
+                                    <option value="Shipped">Shipped</option>
+                                    <option value="Delivered">Delivered</option>
+                                    <option value="Completed">Completed</option>
+                                    <option value="Cancelled">Cancelled</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save changes</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Order Items Modal -->
+        <div class="modal fade" id="orderItemsModal" tabindex="-1" role="dialog" aria-labelledby="orderItemsModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="orderItemsModalLabel">Order Items</h5>
+                        <button type="button" class="close" aria-label="Close" onclick="closeOrderItemsModal()">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="orderItemsContainer">
+                            <!-- Order items will be loaded here -->
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="closeOrderItemsModal()">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.13/jspdf.plugin.autotable.min.js"></script>
+        <script>
+            function sortTable(columnIndex) {
+                var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+                table = document.getElementById("ordersTable");
+                switching = true;
+                dir = "asc";
+                while (switching) {
+                    switching = false;
+                    rows = table.rows;
+                    for (i = 1; i < (rows.length - 1); i++) {
+                        shouldSwitch = false;
+                        x = rows[i].getElementsByTagName("TD")[columnIndex];
+                        y = rows[i + 1].getElementsByTagName("TD")[columnIndex];
+                        if (dir == "asc") {
+                            if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                                shouldSwitch = true;
+                                break;
+                            }
+                        } else if (dir == "desc") {
+                            if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                                shouldSwitch = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (shouldSwitch) {
+                        rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                        switching = true;
+                        switchcount++;
+                    } else {
+                        if (switchcount == 0 && dir == "asc") {
+                            dir = "desc";
+                            switching = true;
+                        }
+                    }
+                }
+                updateSortingArrows(columnIndex, dir);
+            }
+
+            function updateSortingArrows(columnIndex, dir) {
+                var headers = document.querySelectorAll("th.sortable");
+                headers.forEach(function (header, index) {
+                    header.classList.remove("desc");
+                    if (index === columnIndex) {
+                        if (dir === "desc") {
+                            header.classList.add("desc");
+                        }
+                    }
+                });
+            }
+
+            function filterOrders() {
+                var fromDate = document.getElementById("fromDate").value;
+                var toDate = document.getElementById("toDate").value;
+                var status = document.getElementById("statusFilter").value;
+                var table = document.getElementById("ordersTable");
+                var rows = table.rows;
+
+                for (var i = 1; i < rows.length; i++) {
+                    var date = rows[i].cells[2].innerText;
+                    var orderStatus = rows[i].cells[3].innerText;
+                    var showRow = true;
+
+                    if (fromDate && date < fromDate) {
+                        showRow = false;
+                    }
+                    if (toDate && date > toDate) {
+                        showRow = false;
+                    }
+                    if (status && orderStatus !== status) {
+                        showRow = false;
+                    }
+
+                    rows[i].style.display = showRow ? "" : "none";
+                }
+            }
+
+            function searchOrders() {
+                var input = document.getElementById("searchBox");
+                var filter = input.value.toLowerCase();
+                var table = document.getElementById("ordersTable");
+                var rows = table.getElementsByTagName("tr");
+
+                for (var i = 1; i < rows.length; i++) {
+                    var cells = rows[i].getElementsByTagName("td");
+                    var showRow = false;
+                    for (var j = 0; j < cells.length; j++) {
+                        if (cells[j]) {
+                            var cellValue = cells[j].innerText || cells[j].textContent;
+                            if (cellValue.toLowerCase().indexOf(filter) > -1) {
+                                showRow = true;
+                                break;
+                            }
+                        }
+                    }
+                    rows[i].style.display = showRow ? "" : "none";
+                }
+            }
+
+            function downloadCSV() {
+                var csv = [];
+                var rows = document.querySelectorAll("#ordersTable tr");
+                for (var i = 0; i < rows.length; i++) {
+                    if (rows[i].style.display !== "none") {
+                        var row = [], cols = rows[i].querySelectorAll("td, th");
+                        if (i == 0 || cols.length == 6) {
+                            for (var j = 0; j < cols.length; j++) {
+                                if (j !== 5) { // Skip the action column
+                                    row.push(cols[j].innerText);
+                                }
+                            }
+                            csv.push(row.join(","));
+                        }
+                    }
+                }
+
+                var csvContent = "data:text/csv;charset=utf-8," + csv.join("\n");
+                var encodedUri = encodeURI(csvContent);
+                var link = document.createElement("a");
+                link.setAttribute("href", encodedUri);
+                link.setAttribute("download", "orders_report.csv");
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+
+            async function downloadPDF() {
+                const { jsPDF } = window.jspdf;
+                var doc = new jsPDF();
+                var rows = document.querySelectorAll("#ordersTable tr");
+                var head = [], body = [];
+
+                rows.forEach((row, index) => {
+                    if (row.style.display !== "none") {
+                        var cols = row.querySelectorAll("td, th");
+                        var rowData = [];
+                        cols.forEach((col, colIndex) => {
+                            if (colIndex < 5) { // Skip the action column
+                                rowData.push(col.innerText);
+                            }
+                        });
+                        if (index === 0) {
+                            head.push(rowData);
+                        } else {
+                            body.push(rowData);
+                        }
+                    }
+                });
+
+                doc.autoTable({
+                    head: head,
+                    body: body,
+                    theme: 'striped',
+                    headStyles: {
+                        fillColor: [40, 40, 40]
+                    },
+                    styles: {
+                        halign: 'center'
+                    }
+                });
+
+                doc.save('orders_report.pdf');
+            }
+
+            function showEditStatusModal(orderId, currentStatus) {
+                document.getElementById("editStatusOrderId").value = orderId;
+                document.getElementById("status").value = currentStatus;
+                $('#editStatusModal').modal('show');
+            }
+
+            function deleteOrder(orderId) {
+                if (confirm("Are you sure you want to delete this order?")) {
+                    $.post('/ManageOrdersAdmin/DeleteOrder', { id: orderId }, function () {
+                        location.reload();
+                    });
+                }
+            }
+
+            function closeOrderItemsModal() {
+                $('#orderItemsModal').modal('hide');
+            }
+
+            function viewOrderItems(orderId) {
+                $.get('/ManageOrdersAdmin/ViewOrderItems', { orderId: orderId }, function (data) {
+                    $('#orderItemsContainer').html(data);
+                    $('#orderItemsModal').modal('show');
+                });
+            }
+        </script>
+    </main>
+</body>
+
+</html>

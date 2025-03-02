@@ -1,0 +1,243 @@
+﻿@model eBookSystem.Models.Cart
+@{
+    ViewData["Title"] = "My Cart";
+}
+
+<style>
+    .cart-item {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 16px;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(5px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        margin-bottom: 1.5rem;
+        padding: 1.5rem;
+        transition: transform 0.2s;
+    }
+
+        .cart-item:hover {
+            transform: translateY(-2px);
+        }
+
+    .item-image img {
+        width: 120px;
+        height: 180px;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+
+    .out-of-stock {
+        background: var(--secondary-color);
+        color: white;
+        padding: 0.5rem;
+        border-radius: 4px;
+        font-size: 0.875rem;
+    }
+
+    .quantity-btn {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        width: 32px;
+        height: 32px;
+        border-radius: 6px;
+        font-size: 1.2rem;
+        line-height: 1;
+        transition: background-color 0.2s;
+    }
+
+        .quantity-btn:disabled {
+            background-color: var(--secondary-color);
+            opacity: 0.7;
+        }
+
+    .quantity {
+        padding: 0 1rem;
+        font-weight: 600;
+    }
+
+    .cancel-btn {
+        background-color: transparent;
+        color: #dc3545;
+        border: none;
+        font-size: 1.5rem;
+        transition: color 0.2s;
+    }
+
+        .cancel-btn:hover {
+            color: #bb2d3b;
+        }
+
+    .clear-cart-btn {
+        background-color: var(--secondary-color);
+        color: white;
+        border: none;
+        padding: 0.5rem 1.5rem;
+        border-radius: 6px;
+        transition: background-color 0.2s;
+    }
+
+    .checkout-btn {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 0.75rem 2rem;
+        border-radius: 6px;
+        font-weight: 600;
+        transition: background-color 0.2s;
+    }
+
+        .checkout-btn:hover {
+            background-color: #0b5ed7;
+        }
+</style>
+
+<div class="container py-5">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="mb-4">Shopping Cart</h2>
+
+            <div class="cart">
+                @foreach (var item in Model.CartItems)
+
+                {
+                    <div class="cart-item">
+                        <div class="row align-items-center">
+                            <div class="col-md-2">
+                                <div class="item-image">
+                                    @if (item.Book != null && item.Book.CoverImage != null)
+
+                                    {
+                                        <img src="data:image/png;base64,@Convert.ToBase64String(item.Book.CoverImage)" alt="@item.Book.Title" class="img-fluid" />
+                                        @if (item.Book.Quantity == 0)
+
+                                        {
+                                            <div class="out-of-stock mt-2">
+                                                <i class="bi bi-exclamation-circle"></i> Out of Stock
+                                            </div>
+                                        }
+                                    }
+
+                                    else
+
+                                    {
+                                        <div class="out-of-stock">
+                                            <i class="bi bi-exclamation-circle"></i> Book unavailable
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="item-details">
+                                    <h4 class="item-title mb-2">
+                                        @if (item.Book != null && !string.IsNullOrEmpty(item.Book.Title))
+
+                                        {
+                                            @item.Book.Title
+                                        }
+
+                                        else
+
+                                        {
+                                            <span class="text-danger">Title not available</span>
+                                        }
+                                    </h4>
+                                    <div class="item-isbn text-muted mb-3">
+                                        <i class="bi bi-upc"></i> ISBN:
+                                        @if (item.Book != null && !string.IsNullOrEmpty(item.Book.ISBN))
+
+                                        {
+                                            @item.Book.ISBN
+                                        }
+
+                                        else
+
+                                        {
+                                            <span class="text-danger">ISBN not available</span>
+                                        }
+                                    </div>
+                                    <div class="item-quantity d-flex align-items-center">
+                                        @if (item.Book != null)
+
+                                        {
+                                            <form asp-controller="Cart" asp-action="UpdateQuantity" method="post" class="quantity-form d-inline">
+                                                <input type="hidden" name="cartItemId" value="@item.Id" />
+                                                <input type="hidden" name="quantity" value="@(item.Quantity - 1)" />
+                                                <button type="submit" class="quantity-btn" @(item.Quantity <= 1 ? "disabled" : "")>
+                                                    <i class="bi bi-dash"></i>
+                                                </button>
+                                            </form>
+                                            <span class="quantity">@item.Quantity</span>
+                                            <form asp-controller="Cart" asp-action="UpdateQuantity" method="post" class="quantity-form d-inline">
+                                                <input type="hidden" name="cartItemId" value="@item.Id" />
+                                                <input type="hidden" name="quantity" value="@(item.Quantity + 1)" />
+                                                <button type="submit" class="quantity-btn" @(item.Quantity >= item.Book.Quantity ? "disabled" : "")>
+                                                    <i class="bi bi-plus"></i>
+                                                </button>
+                                            </form>
+                                        }
+
+                                        else
+
+                                        {
+                                            <span class="text-danger">Item unavailable</span>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="item-total text-md-center">
+                                    @if (item.Book != null)
+
+                                    {
+                                        <div class="fs-5">
+                                            <span class="text-muted">@item.Quantity x Rs. @item.Book.Price</span>
+                                            <div class="fw-bold">Rs. @((item.Quantity * item.Book.Price))</div>
+                                        </div>
+                                    }
+
+                                    else
+
+                                    {
+                                        <div class="text-danger">Price not available</div>
+                                    }
+                                </div>
+                            </div>
+                            <div class="col-md-2 text-md-end">
+                                <form asp-action="RemoveFromCart" method="post">
+                                    <input type="hidden" name="cartItemId" value="@item.Id" />
+                                    <button type="submit" class="cancel-btn">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div class="cart-footer mt-4">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <form asp-action="ClearCart" method="post">
+                            <button type="submit" class="clear-cart-btn">
+                                <i class="bi bi-cart-x"></i> Clear Cart
+                            </button>
+                        </form>
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        <div class="mb-3">
+                            <h4 class="mb-3">Total: Rs. @Model.CartItems.Sum(item => item.Book != null ? item.Quantity * item.Book.Price : 0)</h4>
+                            <form asp-controller="Order" asp-action="Checkout" method="get" style="display: inline;">
+                                <input type="hidden" name="totalAmount" value="@Model.CartItems.Sum(item => item.Book != null ? item.Quantity * item.Book.Price : 0)" />
+                                <button type="submit" class="checkout-btn">
+                                    <i class="bi bi-credit-card"></i> Checkout
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

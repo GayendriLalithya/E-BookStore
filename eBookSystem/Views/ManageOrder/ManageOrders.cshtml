@@ -1,0 +1,347 @@
+﻿@model IEnumerable<eBookSystem.Models.Order>
+@{
+    ViewData["Title"] = "Manage Orders";
+}
+
+<style>
+
+    /* body {
+        background-color: #f0f8ff;
+        padding: 2rem 0;
+    } */
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .filter-container {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+        .filter-container label {
+            color: var(--secondary-color);
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .filter-container select {
+            max-width: 200px;
+            border-color: var(--accent-color);
+        }
+
+    .order {
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(10px);
+        padding: 2rem;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
+        border: 1px solid rgba(112, 217, 230, 0.2);
+    }
+
+        .order h3 {
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+            .order h3::before {
+                content: '\F4E6';
+                font-family: "bootstrap-icons";
+            }
+
+    .progress-bar-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin: 2rem 0;
+        padding: 1rem;
+        background: #f8f9fa;
+        border-radius: 10px;
+        overflow-x: auto;
+    }
+
+    .progress-stage {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        min-width: 80px;
+    }
+
+    .circle {
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        background: #ddd;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        transition: all 0.3s ease;
+    }
+
+    .progress-line {
+        flex-grow: 1;
+        height: 3px;
+        background: #ddd;
+        margin: 0 5px;
+    }
+
+    .progress-stage.active .circle {
+        background: var(--primary-color);
+        transform: scale(1.1);
+    }
+
+    .progress-line.active {
+        background: var(--primary-color);
+    }
+
+    .label {
+        font-size: 0.8rem;
+        color: var(--secondary-color);
+    }
+
+    .cart-item {
+        display: grid;
+        grid-template-columns: 100px 1fr;
+        gap: 1.5rem;
+        padding: 1rem;
+        margin: 1rem 0;
+        background: white;
+        border-radius: 10px;
+        transition: transform 0.2s ease;
+    }
+
+        .cart-item:hover {
+            transform: translateY(-2px);
+        }
+
+    .item-image {
+        width: 100px;
+        height: 150px;
+        background: var(--accent-color);
+        border-radius: 5px;
+        overflow: hidden;
+    }
+
+    .item-details {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .item-title {
+        color: var(--primary-color);
+        margin: 0;
+    }
+
+    .rating {
+        margin-top: auto;
+    }
+
+    .star {
+        color: #ffd700;
+        cursor: pointer;
+        font-size: 1.2rem;
+    }
+
+        .star.selected {
+            color: #ffd700;
+        }
+</style>
+
+
+<div class="container">
+
+    <div class="filter-container">
+        <label for="orderStatusFilter">
+            <i class="bi bi-funnel-fill"></i>
+            Filter by Status:
+        </label>
+        <select id="orderStatusFilter" class="form-control">
+            <option value="All">All</option>
+            <option value="Pending">Pending</option>
+            <option value="Confirmed">Confirmed</option>
+            <option value="Processing">Processing</option>
+            <option value="Packaged">Packaged</option>
+            <option value="Shipped">Shipped</option>
+            <option value="Delivered">Delivered</option>
+            <option value="Completed">Completed</option>
+            <option value="Cancelled">Cancelled</option>
+        </select>
+    </div>
+
+
+    <div id="ordersContainer">
+        @foreach (var order in Model)
+        {
+            <div class="order glassmorphism">
+                <!-- Order Header -->
+                <h3>Order #@order.Id</h3>
+                <p><i class="bi bi-calendar3"></i> Date: @order.OrderDate.ToString("MMMM d, yyyy h:mm tt")</p>
+                <p><i class="bi bi-info-circle"></i> Status: @order.Status</p>
+                <p><i class="bi bi-currency-dollar"></i> Total Amount: Rs. @order.TotalAmount</p>
+
+                <!-- Progress Bar -->
+                <div class="progress-bar-container">
+                    <div class="progress-stage @GetProgressStageClass(order.Status, 1)">
+                        <div class="circle">1</div>
+                        <div class="label">Pending</div>
+                    </div>
+                    <div class="progress-line @GetProgressStageClass(order.Status, 2)"></div>
+                    <div class="progress-stage @GetProgressStageClass(order.Status, 2)">
+                        <div class="circle">2</div>
+                        <div class="label">Confirmed</div>
+                    </div>
+                    <div class="progress-line @GetProgressStageClass(order.Status, 3)"></div>
+                    <div class="progress-stage @GetProgressStageClass(order.Status, 3)">
+                        <div class="circle">3</div>
+                        <div class="label">Processing</div>
+                    </div>
+                    <div class="progress-line @GetProgressStageClass(order.Status, 4)"></div>
+                    <div class="progress-stage @GetProgressStageClass(order.Status, 4)">
+                        <div class="circle">4</div>
+                        <div class="label">Packaged</div>
+                    </div>
+                    <div class="progress-line @GetProgressStageClass(order.Status, 5)"></div>
+                    <div class="progress-stage @GetProgressStageClass(order.Status, 5)">
+                        <div class="circle">5</div>
+                        <div class="label">Shipped</div>
+                    </div>
+                    <div class="progress-line @GetProgressStageClass(order.Status, 6)"></div>
+                    <div class="progress-stage @GetProgressStageClass(order.Status, 6)">
+                        <div class="circle">6</div>
+                        <div class="label">Delivered</div>
+                    </div>
+                </div>
+
+                <!-- Items Section -->
+                <h4><i class="bi bi-box-seam"></i> Items:</h4>
+                <div class="cart-items-container">
+                    @foreach (var item in order.OrderItems)
+                    {
+                        <div class="cart-item glassmorphism">
+                            <!-- Book Cover -->
+                            <div class="item-image">
+                                <img src="data:image/jpeg;base64,@Convert.ToBase64String(item.Book.CoverImage)" alt="@item.Book.Title" />
+                            </div>
+
+                            <!-- Item Details -->
+                            <div class="item-details">
+                                <h5 class="item-title">@item.Book.Title</h5>
+                                <div class="item-isbn"><i class="bi bi-upc"></i> ISBN: @item.Book.ISBN</div>
+                                <div class="item-quantity"><i class="bi bi-123"></i> Quantity: @item.Quantity</div>
+                                <div class="item-price"><i class="bi bi-tag"></i> Price: Rs. @item.Book.Price</div>
+                                <div class="item-total"><i class="bi bi-cash"></i> Total: Rs. @(item.Book.Price * item.Quantity)</div>
+
+                                <!-- Rating (only for completed orders) -->
+                                @if (order.Status == "Completed")
+                                {
+                                    <div class="rating">
+                                        @for (double i = 1; i <= 5; i += 1)
+                                        {
+                                            var isFilled = i <= item.Rating;
+                                            <span class="star @(isFilled ? "selected" : "")">&#9733;</span>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+
+    </div>
+
+</div>
+
+
+<script>
+    function filterOrders() {
+        var filter = document.getElementById('orderStatusFilter').value.toLowerCase();
+        var orders = document.querySelectorAll('.order');
+
+        orders.forEach(function (order) {
+            var status = order.querySelector('.progress-stage.active .label').textContent.toLowerCase();
+            if (filter === 'all' || status.includes(filter)) {
+                order.style.display = 'block';
+            } else {
+                order.style.display = 'none';
+            }
+        });
+    }
+
+    document.querySelectorAll('.star').forEach(function (star) {
+        star.addEventListener('mouseenter', function () {
+            var rating = this.getAttribute('data-rating');
+            updateStarRating(this.closest('.rating'), rating);
+        });
+
+        star.addEventListener('mouseleave', function () {
+            var ratingElement = this.closest('.rating');
+            var rating = ratingElement.getAttribute('data-rating');
+            updateStarRating(ratingElement, rating);
+        });
+
+        star.addEventListener('click', function () {
+            var ratingElement = this.closest('.rating');
+            var orderId = ratingElement.getAttribute('data-order-id');
+            var bookId = ratingElement.getAttribute('data-book-id');
+            var rating = this.getAttribute('data-rating');
+
+            fetch('/ManageOrder/SubmitRating', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ orderId: orderId, bookId: bookId, rating: rating })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        ratingElement.setAttribute('data-rating', rating);
+                        updateStarRating(ratingElement, rating);
+                    } else {
+                        alert('There was an error submitting your feedback. Please try again.');
+                    }
+                });
+        });
+    });
+
+    function updateStarRating(ratingElement, rating) {
+        ratingElement.querySelectorAll('.star').forEach(function (star) {
+            var starRating = parseFloat(star.getAttribute('data-rating'));
+            if (starRating <= rating) {
+                star.classList.add('selected');
+            } else {
+                star.classList.remove('selected');
+            }
+        });
+    }
+</script>
+
+
+@functions {
+    public static string GetProgressStageClass(string status, int stage)
+    {
+        var statuses = new List<string> { "Pending", "Confirmed", "Processing", "Packaged", "Shipped", "Delivered", "Completed", "Cancelled" };
+        int currentStage = statuses.IndexOf(status) + 1;
+        if (status == "Cancelled")
+        {
+            return "active cancelled";
+        }
+        return stage <= currentStage ? "active" : "";
+    }
+}

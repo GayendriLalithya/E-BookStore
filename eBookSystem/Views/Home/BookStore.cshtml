@@ -1,0 +1,321 @@
+﻿@model List<eBookSystem.Models.Book>
+@{
+    ViewData["Title"] = "Book Store";
+}
+
+<div>
+     @* <link rel="stylesheet" href="~/assets/css/BookStore_styles.css"> *@
+</div>
+
+<style>
+
+:root {
+    --primary-color: #0d6efd;
+    --secondary-color: #6c757d;
+    --accent-color: #70d9e6;
+}
+
+.hero-section {
+    background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://source.unsplash.com/random/1920x1080/?library');
+    height: 500px;
+    background-size: cover;
+    background-position: center;
+    color: white;
+    display: flex;
+    align-items: center;
+    text-align: center;
+}
+
+.filter-section {
+    background-color: #0a0f2c;
+    padding: 1rem 0;
+}
+
+    .filter-section input,
+    .filter-section select {
+        background-color: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+    }
+
+        .filter-section input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+    .filter-section .btn {
+        background-color: var(--accent-color);
+        border: none;
+    }
+
+.carousel-item img {
+    height: 500px;
+    object-fit: cover;
+}
+
+.category-card {
+    transition: transform 0.3s;
+    cursor: pointer;
+}
+
+    .category-card:hover {
+        transform: translateY(-5px);
+    }
+
+.book-slider {
+    overflow-x: hidden;
+    position: relative;
+}
+
+.book-wrapper {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 20px 0;
+}
+
+.book-card {
+    border: none;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s;
+}
+
+    .book-card:hover {
+        transform: translateY(-5px);
+    }
+
+.stock-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.book-image {
+    height: 300px;
+    background-size: cover;
+    background-position: center;
+}
+
+    .select-minimal-container {
+        position: relative;
+        width: 100%;
+    }
+
+    .select-minimal {
+        width: 100%;
+        padding: 12px 16px;
+        font-size: 14px;
+        border: none;
+        border-bottom: 2px solid #e5e7eb;
+        background-color: transparent;
+        cursor: pointer;
+        appearance: none;
+        transition: all 0.2s ease;
+    }
+
+        .select-minimal:focus {
+            outline: none;
+            border-bottom-color: #2563eb;
+        }
+
+    .select-minimal-icon {
+        position: absolute;
+        right: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 10px;
+        color: #6b7280;
+        pointer-events: none;
+        transition: transform 0.2s ease;
+    }
+
+    .select-minimal:focus + .select-minimal-icon {
+        transform: translateY(-50%) rotate(180deg);
+        color: #2563eb;
+    }
+
+    /* Common styles for all options */
+    select option {
+        padding: 12px;
+        font-size: 14px;
+        background-color: white;
+        color: #374151;
+    }
+
+        select option:hover {
+            background-color: #f3f4f6;
+        }
+</style>
+
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <h1 class="display-3 mb-4">Discover Your Next Adventure</h1>
+        <p class="lead mb-4">Explore thousands of books at amazing prices</p>
+        <button class="btn btn-lg" style="background-color: var(--accent-color);">Shop Now</button>
+    </div>
+</section>
+
+
+<!-- Filter Section -->
+<section class="filter-section py-4">
+    <div class="container">
+        <div class="row g-3 align-items-center">
+            <!-- Search Input -->
+            <div class="col-md-4">
+                <input type="text" id="searchInput" class="form-control" placeholder="Search for books..." oninput="applyFilters()">
+            </div>
+
+            <!-- Sort Options -->
+            <div class="col-md-2">
+                <select id="sortOptions" class="form-select" onchange="applyFilters()">
+                    <option value="asc">Price: Low to High</option>
+                    <option value="desc">Price: High to Low</option>
+                    <option value="rating">Rating</option>
+                </select>
+            </div>
+
+            <!-- Min Price -->
+            <div class="col-md-2">
+                <input type="number" id="minPrice" class="form-control" placeholder="Min Price">
+            </div>
+
+            <!-- Max Price -->
+            <div class="col-md-2">
+                <input type="number" id="maxPrice" class="form-control" placeholder="Max Price">
+            </div>
+
+            <!-- Apply and Reset Buttons -->
+            <div class="col-md-1">
+                <button onclick="applyPriceFilter()" class="btn btn-primary w-100">Apply</button>
+            </div>
+            <div class="col-md-1">
+                <button onclick="resetFilters()" class="btn btn-secondary w-100">Reset</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section class="container py-5">
+        <h2 class="mb-4">Featured Books</h2>
+        <div class="book-wrapper">
+            @foreach (var book in Model)
+            {
+                <div class="book-card card @((book.Quantity == 0) ? "opacity-low" : "")">
+                    <div class="position-relative">
+                        <!-- Book Image -->
+                        <div class="book-image img-holder" style="background-image: url('data:image/png;base64,@Convert.ToBase64String(book.CoverImage)'); height: 300px; background-size: cover; background-position: center;"></div>
+
+                        <!-- Stock Badge -->
+                        <span class="badge @(book.Quantity > 0 ? "bg-success" : "bg-danger") stock-badge">
+                            @(book.Quantity > 0 ? "In Stock" : "Sold Out")
+                        </span>
+                    </div>
+
+                    <div class="card-body">
+                        <!-- Book Title -->
+                        <h5 class="card-title">
+                            <a href="@Url.Action("Details", "Book", new { id = book.Id })">@book.Title</a>
+                        </h5>
+
+                        <!-- Author -->
+                        <p class="card-text text-muted">@book.Author</p>
+
+                        <!-- Price -->
+                        <p class="card-text"><strong>Rs. @book.Price</strong></p>
+
+                        <!-- Rating -->
+                        <div class="rating-wrapper mb-2">
+                            @for (double i = 1; i <= 5; i++)
+                            {
+                                var avgRating = book.AverageRating ?? 0;
+
+                                if (i <= avgRating)
+                                {
+                                    <ion-icon name="star" aria-hidden="true"></ion-icon>
+                                }
+                                else
+                                {
+                                    <ion-icon name="star-outline" aria-hidden="true"></ion-icon>
+                                }
+                            }
+                        </div>
+
+                        <!-- Add to Cart Button -->
+                        <button class="btn btn-primary w-100" @(book.Quantity == 0 ? "disabled" : "")>
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+</section>
+
+
+
+
+    <script src="~/assets/js/script.js" defer></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById("searchInput").addEventListener("input", applyFilters);
+            document.getElementById("sortOptions").addEventListener("change", applyFilters);
+        });
+
+        function applyFilters() {
+            var searchInput = document.getElementById("searchInput").value.toLowerCase();
+            var sortOption = document.getElementById("sortOptions").value;
+            var bookItems = document.querySelectorAll(".book-item");
+
+            var filteredBooks = Array.from(bookItems).filter(function (item) {
+                var title = item.getAttribute("data-title").toLowerCase();
+                return title.includes(searchInput);
+            });
+
+            if (sortOption === "asc") {
+                filteredBooks.sort(function (a, b) {
+                    return parseFloat(a.getAttribute("data-price")) - parseFloat(b.getAttribute("data-price"));
+                });
+            } else if (sortOption === "desc") {
+                filteredBooks.sort(function (a, b) {
+                    return parseFloat(b.getAttribute("data-price")) - parseFloat(a.getAttribute("data-price"));
+                });
+            } else if (sortOption === "rating") {
+                filteredBooks.sort(function (a, b) {
+                    return parseFloat(b.getAttribute("data-rating")) - parseFloat(a.getAttribute("data-rating"));
+                });
+            }
+
+            var bookList = document.getElementById("bookList");
+            bookList.innerHTML = "";
+            filteredBooks.forEach(function (item) {
+                bookList.appendChild(item);
+            });
+        }
+
+        function applyPriceFilter() {
+            var minPrice = parseFloat(document.getElementById("minPrice").value) || 0;
+            var maxPrice = parseFloat(document.getElementById("maxPrice").value) || Infinity;
+            var bookItems = document.querySelectorAll(".book-item");
+
+            var filteredBooks = Array.from(bookItems).filter(function (item) {
+                var price = parseFloat(item.getAttribute("data-price"));
+                return price >= minPrice && price <= maxPrice;
+            });
+
+            var bookList = document.getElementById("bookList");
+            bookList.innerHTML = "";
+            filteredBooks.forEach(function (item) {
+                bookList.appendChild(item);
+            });
+        }
+
+        function resetFilters() {
+            document.getElementById("searchInput").value = "";
+            document.getElementById("sortOptions").selectedIndex = 0;
+            document.getElementById("minPrice").value = "";
+            document.getElementById("maxPrice").value = "";
+
+            applyFilters();
+        }
+    </script>

@@ -1,0 +1,45 @@
+﻿@model eBookSystem.Models.Order
+
+@{
+    ViewData["Title"] = "Payment";
+}
+
+<h2>Payment</h2>
+
+<form id="payment-form" asp-action="ProcessPayment" method="post">
+    <input type="hidden" name="orderId" value="@Model.Id" />
+    <div id="card-element" class="form-group">
+        <!-- A Stripe Element will be inserted here. -->
+    </div>
+    <button type="submit" class="btn btn-primary">Submit Payment</button>
+</form>
+
+@section Scripts {
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        var stripe = Stripe('@ViewBag.StripePublishableKey');
+        var elements = stripe.elements();
+        var card = elements.create('card');
+        card.mount('#card-element');
+
+        var form = document.getElementById('payment-form');
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+            stripe.createToken(card).then(function (result) {
+                if (result.error) {
+                    // Inform the user if there was an error.
+                } else {
+                    // Send the token to your server.
+                    var hiddenInput = document.createElement('input');
+                    hiddenInput.setAttribute('type', 'hidden');
+                    hiddenInput.setAttribute('name', 'stripeToken');
+                    hiddenInput.setAttribute('value', result.token.id);
+                    form.appendChild(hiddenInput);
+
+                    // Submit the form.
+                    form.submit();
+                }
+            });
+        });
+    </script>
+}

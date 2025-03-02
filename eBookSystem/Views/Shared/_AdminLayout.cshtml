@@ -1,0 +1,120 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - eBookSystem</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/eBookSystem.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/assets/css/AdminStyle.css">
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
+    <style>
+        aside {
+            position: fixed;
+        }
+
+        .active {
+            background-color: #ddd; /* Example active style */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <aside id="sidebar">
+            <!-- Sidebar content -->
+            <div class="toggle">
+                <div class="logo">
+                    <img src="~/images/logo.png" alt="Logo">
+                    <h2>EBook<span class="danger"></span></h2>
+                </div>
+                <div class="close" id="close-btn">
+                    <span class="material-icons-sharp">
+                        close
+                    </span>
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <a href="adminDashboard" class="nav-link" id="adminDashboard">
+                    <span class="material-icons-sharp">
+                        dashboard
+                    </span>
+                    <h3>Dashboard</h3>
+                </a>
+                <a href="/admin/book" class="nav-link" id="book">
+                    <span class="material-icons-sharp">
+                        book
+                    </span>
+                    <h3>Books</h3>
+                </a>
+               
+                <a href="/admin/manageBook" class="nav-link" id="manageBook">
+                    <span class="material-icons-sharp">
+                            book
+                    </span>
+                    <h3>Manage Books</h3>
+                </a>
+                <a href="/admin/manageCustomers" class="nav-link" id="manageCustomers">
+                    <span class="material-icons-sharp">
+                        person
+                    </span>
+                    <h3>Manage Customers</h3>
+                </a>
+                <a href="/admin/manageOrders" class="nav-link" id="mangeOrder">
+                    <span class="material-icons-sharp">
+                        receipt_long
+                    </span>
+                    <h3>Manage Orders</h3>
+                </a>
+                
+               
+              
+                <a href="#" class="nav-link" id="logout">
+                    <span class="material-icons-sharp">
+                        logout
+                    </span>
+                    <h3>Logout</h3>
+                </a>
+
+            </div>
+        </aside>
+
+        <main>
+            <!-- Main content -->
+            @RenderBody()
+        </main>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script>
+        $(document).ready(function () {
+            // Close sidebar button functionality
+            $('#close-btn').click(function () {
+                $('#sidebar').toggleClass('active');
+            });
+
+            // Load active link from localStorage
+            const activeLinkId = localStorage.getItem('activeLinkId');
+            if (activeLinkId) {
+                $('#' + activeLinkId).addClass('active');
+            } else {
+                $('#adminDashboard').addClass('active'); // Default active link
+            }
+
+            // Click event to handle active class and localStorage
+            $('.nav-link').click(function () {
+                $('.nav-link.active').removeClass('active'); // Remove active class from previously active link
+                $(this).addClass('active'); // Add active class to the clicked link
+                localStorage.setItem('activeLinkId', $(this).attr('id')); // Save the id of the active link to localStorage
+            });
+        });
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

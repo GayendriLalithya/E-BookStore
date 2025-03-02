@@ -1,0 +1,189 @@
+﻿@model DirectCheckoutViewModel
+
+@{
+    ViewData["Title"] = "Checkout";
+}
+
+<style>
+
+
+        body {
+            min-height: 100vh;
+            padding: 2rem 0;
+        }
+
+        .checkout-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .cart-details {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .cart-item {
+            display: grid;
+            grid-template-columns: 100px 1fr auto;
+            gap: 1rem;
+            padding: 1rem;
+            align-items: center;
+        }
+
+        .item-image {
+            width: 100px;
+            height: 150px;
+            background-color: var(--accent-color);
+            border-radius: 5px;
+        }
+
+        .item-details h4 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .cart-footer {
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 2px solid #eee;
+        }
+
+        .checkout-form {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-control {
+            border: 1px solid var(--accent-color);
+            padding: 0.8rem;
+        }
+
+        .form-control:focus {
+            box-shadow: 0 0 0 0.2rem rgba(112, 217, 230, 0.25);
+            border-color: var(--primary-color);
+        }
+
+        .checkout-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 5px;
+            width: 100%;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        .checkout-btn:hover {
+            background: var(--accent-color);
+            transform: translateY(-2px);
+        }
+</style>
+
+<center><h2>Checkout</h2></center>
+<div class="checkout-content">
+
+    <div class="cart-details">
+        <h3>Order Summary</h3>
+
+        <div class="cart-items-container">
+            <ul class="list-group">
+                <li class="list-group-item cart-item">
+                    <!-- Book Cover Image -->
+                    <div class="item-image">
+                        <img src="data:image/jpeg;base64,@Convert.ToBase64String(Model.Book.CoverImage)" alt="@Model.Book.Title" class="img-fluid" />
+                    </div>
+
+                    <!-- Book Details -->
+                    <div class="item-details">
+                        <h4 class="item-title">@Model.Book.Title</h4>
+                        <div class="item-isbn">ISBN: @Model.Book.ISBN</div>
+                        <div class="item-quantity">
+                            <span class="quantity">Quantity: @Model.Quantity</span>
+                        </div>
+                    </div>
+
+                    <!-- Price Calculation -->
+                    <div class="item-total">
+                        <div>Total: @Model.Quantity x Rs. @Model.Book.Price = Rs. @(Model.Quantity * Model.Book.Price)</div>
+                    </div>
+                </li>
+            </ul>
+
+
+        </div>
+
+        <div class="cart-footer">
+            <!-- Cart Total Amount -->
+            <h4>Total: Rs. @Model.TotalAmount</h4>
+        </div>
+
+    </div>
+
+    <div class="checkout-form">
+        <h3>Shipping details</h3>
+        <form asp-action="ProcessCheckout" method="post">
+            <!-- Full Name -->
+            <div class="form-group">
+                <label for="FullName">Full Name</label>
+                <input type="text" class="form-control" id="FullName" name="FullName" required />
+            </div>
+
+            <!-- Address -->
+            <div class="form-group">
+                <label for="Address">Address</label>
+                <input type="text" class="form-control" id="Address" name="Address" required />
+            </div>
+
+            <!-- City -->
+            <div class="form-group">
+                <label for="City">City</label>
+                <input type="text" class="form-control" id="City" name="City" required />
+            </div>
+
+            <!-- State -->
+            <div class="form-group">
+                <label for="State">State</label>
+                <input type="text" class="form-control" id="State" name="State" required />
+            </div>
+
+            <!-- Zip Code -->
+            <div class="form-group">
+                <label for="ZipCode">Zip Code</label>
+                <input type="text" class="form-control" id="ZipCode" name="ZipCode" required />
+            </div>
+
+            <!-- Country -->
+            <div class="form-group">
+                <label for="Country">Country</label>
+                <input type="text" class="form-control" id="Country" name="Country" required />
+            </div>
+
+            <!-- Hidden Fields for Total Amount, Book ID, and Quantity -->
+            <input type="hidden" id="TotalAmount" name="TotalAmount" value="@Model.TotalAmount" />
+            <input type="hidden" id="BookId" name="BookId" value="@Model.BookId" />
+            <input type="hidden" id="Quantity" name="Quantity" value="@Model.Quantity" />
+
+            <!-- Submit Button -->
+            <div class="form-group">
+                <button type="submit" class="checkout-btn">Proceed to Payment</button>
+            </div>
+        </form>
+
+
+    </div>
+
+</div>

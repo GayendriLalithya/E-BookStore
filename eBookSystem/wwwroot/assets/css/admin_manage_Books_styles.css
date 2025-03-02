@@ -1,0 +1,147 @@
+﻿body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    color: white;
+}
+
+h1 {
+    margin-bottom: 20px;
+}
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.alert {
+    background-color: #33414a;
+    border: none;
+    color: white;
+    margin-bottom: 20px;
+}
+
+.sidebar {
+    width: 200px;
+    margin-right: 0px;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 10px;
+    color: white;
+}
+
+.content {
+    flex: 1;
+}
+
+.table-container {
+    background-color: #33414a;
+    padding: 20px;
+    border-radius: 10px;
+    width: 150%;
+    overflow: hidden;
+    margin-left: -40px;
+}
+
+table.modernTable {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #1e2027;
+    color: #E0E0E0;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+    table.modernTable th {
+        background-color: #1e2027;
+        padding: 12px;
+        border-bottom: 1px solid #1e2027;
+        cursor: pointer;
+    }
+
+        table.modernTable th.sortable:after {
+            content: " \25B2"; /* up arrow */
+            font-size: 0.8em;
+            color: #aaa;
+            padding-left: 5px;
+        }
+
+        table.modernTable th.sortable.desc:after {
+            content: " \25BC"; /* down arrow */
+        }
+
+    table.modernTable td {
+        padding: 12px;
+        border-bottom: 1px solid #1e2027;
+    }
+
+    table.modernTable tr:nth-child(even) {
+        background-color: #16181e;
+    }
+
+.btn-primary, .btn-danger {
+    background-color: #6200ee;
+    border: none;
+    border-radius: 12px;
+    width: 24px;
+    height: 24px;
+    margin-bottom: 14px;
+    transition: background-color 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .btn-primary:hover, .btn-danger:hover {
+        background-color: #3700b3;
+    }
+
+.btn-danger {
+    background-color: #ee0062;
+}
+
+    .btn-danger:hover {
+        background-color: #b30037;
+    }
+
+.action-icons {
+    display: flex;
+    gap: 10px;
+}
+
+    .action-icons .btn .icon {
+        margin-right: 5px;
+    }
+
+.btn-download {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 10px 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+    .btn-download:hover {
+        background-color: #0056b3;
+    }
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+    .header-container .form-control {
+        width: 200px;
+    }
+
+.button-container {
+    display: flex;
+    gap: 10px;
+}

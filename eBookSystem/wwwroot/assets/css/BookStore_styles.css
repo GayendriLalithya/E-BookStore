@@ -1,0 +1,85 @@
+﻿:root {
+    --primary-color: #0d6efd;
+    --secondary-color: #6c757d;
+    --accent-color: #70d9e6;
+}
+
+.hero-section {
+    background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://source.unsplash.com/random/1920x1080/?library');
+    height: 500px;
+    background-size: cover;
+    background-position: center;
+    color: white;
+    display: flex;
+    align-items: center;
+    text-align: center;
+}
+
+.filter-section {
+    background-color: #0a0f2c;
+    padding: 1rem 0;
+}
+
+    .filter-section input,
+    .filter-section select {
+        background-color: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+    }
+
+        .filter-section input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+    .filter-section .btn {
+        background-color: var(--accent-color);
+        border: none;
+    }
+
+.carousel-item img {
+    height: 500px;
+    object-fit: cover;
+}
+
+.category-card {
+    transition: transform 0.3s;
+    cursor: pointer;
+}
+
+    .category-card:hover {
+        transform: translateY(-5px);
+    }
+
+.book-slider {
+    overflow-x: hidden;
+    position: relative;
+}
+
+.book-wrapper {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 20px 0;
+}
+
+.book-card {
+    border: none;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s;
+}
+
+    .book-card:hover {
+        transform: translateY(-5px);
+    }
+
+.stock-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.book-image {
+    height: 300px;
+    background-size: cover;
+    background-position: center;
+}
